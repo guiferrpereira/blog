@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(version: 20141216230336) do
 
   create_table "postgres_bases", force: true do |t|
     t.hstore "key"
-    t.string "value"
+    t.binary "value"
   end
 
   add_index "postgres_bases", ["key"], name: "index_postgres_bases_on_key", using: :gin

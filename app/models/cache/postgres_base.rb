@@ -4,12 +4,13 @@ module Cache
       obj = get *args
       return obj if obj
 
-      cache *args
+      cached = yield *args
+      cache *args, cached
+      cached
     end
 
 		def matching args
-			data = key(*args)
-			Cache::PostgresBase.where("key -> :k LIKE :v", :k => data.keys.first, :v => data.values.first)
+			Cache::PostgresBase.where("key @> '#{key(*args).keys.first}=>#{key(*args).values.first}'")
 		end 
 
     def get *raw_key
@@ -17,8 +18,12 @@ module Cache
       Marshal.load(obj) if obj.present?
     end
 
-    def cache *raw_key
-      matching(raw_key).first_or_create(:key => key(*raw_key), :value => Marshal.dump(raw_key))
+    def cache *raw_key, value
+    	puts "==========="
+    	puts value.inspect
+    	puts key(*raw_key)
+    	puts "==========="
+      matching(raw_key).first_or_create(:key => key(*raw_key), :value => Marshal.dump(value))
     end
 	end
 end
