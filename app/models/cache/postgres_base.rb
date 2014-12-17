@@ -19,10 +19,6 @@ module Cache
     end
 
     def cache *raw_key, value
-    	puts "==========="
-    	puts value.inspect
-    	puts key(*raw_key)
-    	puts "==========="
       matching(raw_key).first_or_create(:key => key(*raw_key), :value => Marshal.dump(value))
     end
 	end
