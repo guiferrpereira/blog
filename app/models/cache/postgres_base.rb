@@ -8,18 +8,18 @@ module Cache
       cache *args, cached
       cached
     end
-
+		
 		def matching args
 			Cache::PostgresBase.where("key @> '#{key(*args).keys.first}=>#{key(*args).values.first}'")
-		end 
+		end
 
-    def get *raw_key
+		def get *raw_key
     	obj = matching(raw_key).try(:first).try(:value)
       Marshal.load(obj) if obj.present?
     end
 
-    def cache *raw_key, value
-      matching(raw_key).first_or_create(:key => key(*raw_key), :value => Marshal.dump(value))
-    end
+		def cache *raw_key, value
+    	matching(raw_key).first_or_create(:key => key(*raw_key), :value => Marshal.dump(value))
+  	end
 	end
 end
